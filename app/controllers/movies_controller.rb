@@ -61,8 +61,37 @@ class MoviesController < ApplicationController
     redirect_to movies_path
   end
   
+  
+  
   def search_tmdb
+    
+    if(params[:search_terms].nil?)
+      flash[:warning] = "Invalid input"
+      redirect_to movies_path
+    end
+    if (params[:search_terms].empty?)
+      flash[:warning] = "Invalid input"
+       redirect_to movies_path
+       return
+    end
+     
     @movies=Movie.find_in_tmdb(params[:search_terms])
+    if(!@movies.blank?)
+        flash[:notice] = "No Match"
+        
+        redirect_to movies_path
+        return
+    end
+     
+    @search_terms = params[:search_terms]
+      render :search_tmdb
   end
-
+   
+    def add_tmdb
+      params[:tmdb_movies].keys.each do |id|
+        Movie.create_from_tmdb(id)
+      end
+        redirect_to movies_path    
+ 
+    end
 end

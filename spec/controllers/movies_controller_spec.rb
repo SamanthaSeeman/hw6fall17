@@ -21,4 +21,11 @@ describe MoviesController do
       expect(assigns(:movies)).to eq(fake_results)
     end 
   end
+  
+  it 'error displayed when no search' do
+    post :search_tmdb, {:search_terms => ''}
+    expect(response).to redirect_to(movies_path)
+    expect(flash[:warning]).to be_present
+  end
+  
 end
